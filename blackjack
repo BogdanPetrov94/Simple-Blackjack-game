@@ -86,7 +86,7 @@ while decision != "STAND":
     total_points_player += int(points_player)
 
     # Ace can take 1 or 11 points depending on the better combination,
-    # so if the total sum is >21 and there is an Ace it grants 1 point instead of 11.
+    # so if the total sum is >10 and there is an Ace it grants 1 point instead of 11.
     if dealer_card_value == "A" and total_points_dealer > 10:
         total_points_dealer = total_points_dealer - 10
     if player_card_value == "A" and total_points_player > 10:

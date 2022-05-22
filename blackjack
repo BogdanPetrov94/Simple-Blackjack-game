@@ -18,11 +18,14 @@ dealer_card_suit = ''
 player_card_value = ''
 player_card_suit = ''
 current_dealer_card = ''
+first_dealer_card = ''
 current_player_card = ''
 points_dealer = ''
 points_player = ''
+first_dealer_card_points = 0
 total_points_dealer = 0
 total_points_player = 0
+counter = 0
 decision = "HIT"
 print("Welcome to SoftUni Casino, today we're playing Blackjack!\nYour first cards are:")
 # While loop with decision hit/stand
@@ -41,7 +44,10 @@ while decision != "STAND":
     all_cards.append(current_player_card)
 
     # Adding dealer and players cards in their own lists
-    dealer_cards.append(current_dealer_card)
+    if counter == 0:
+        first_dealer_card = current_dealer_card
+    if counter != 0:
+        dealer_cards.append(current_dealer_card)
     player_cards.append(current_player_card)
     # Assigning points on cards by taking their first char.
     dealer_card_value = current_dealer_card[0]
@@ -72,14 +78,18 @@ while decision != "STAND":
     else:
         points_player = player_card_value[0]
 
-    total_points_dealer += int(points_dealer)
+    if counter == 0:
+        first_dealer_card_points += int(points_dealer)
+    if counter != 0:
+        total_points_dealer += int(points_dealer)
+
     total_points_player += int(points_player)
 
     # Ace can take 1 or 11 points depending on the better combination,
     # so if the total sum is >21 and there is an Ace it grants 1 point instead of 11.
-    if dealer_card_value == "A" and total_points_dealer > 21:
+    if dealer_card_value == "A" and total_points_dealer > 10:
         total_points_dealer = total_points_dealer - 10
-    if player_card_value == "A" and total_points_player > 21:
+    if player_card_value == "A" and total_points_player > 10:
         total_points_player = total_points_player - 10
 
     if total_points_dealer == 21 or total_points_player == 21:
@@ -87,29 +97,30 @@ while decision != "STAND":
     elif total_points_dealer > 21 or total_points_player > 21:
         break
 
-    print(f"Dealer cards/points - {dealer_cards} / {total_points_dealer}")
+    print(f"Dealer cards/points - 1 hidden and {dealer_cards} / {total_points_dealer}")
     print(f"Player cards/points - {player_cards} / {total_points_player}")
 
     # Making a choice if you will take a new card or not.
     decision = input("Make your decision and please type your answer - HIT or STAND").upper()
+    if decision == "HIT":
+        counter += 1
 
+# Adding the first dealer card which was hidden until now
+dealer_cards.append(first_dealer_card)
+total_points_dealer += first_dealer_card_points
 # Checking conditions and assigning a winner
-if (total_points_player < total_points_dealer) and total_points_dealer < 22:
-    print(f"Dealer wins with {dealer_cards} vs players {player_cards} and {total_points_dealer} to {total_points_player} points")
-elif (total_points_player < total_points_dealer) and total_points_dealer > 22:
+if (total_points_player > total_points_dealer) and total_points_player < 22:
     print(f"Player wins with {player_cards} vs dealers {dealer_cards} and {total_points_player} to {total_points_dealer} points")
-elif (total_points_player > total_points_dealer) and total_points_player < 22:
+elif (total_points_player < total_points_dealer) and (total_points_player < 22 and total_points_dealer > 21):
     print(f"Player wins with {player_cards} vs dealers {dealer_cards} and {total_points_player} to {total_points_dealer} points")
 elif total_points_player == total_points_dealer:
     print(f"Blackjack Tie!\nThe dealer and the player have exactly the same points!")
 elif total_points_player > 21:
     print(f"Dealer wins, your points from {player_cards} are {total_points_player} which is above 21!")
 else:
-    print(f"Dealer cards/points - {dealer_cards} / {total_points_dealer}")
-    print(f"Player cards/points - {player_cards} / {total_points_player}")
+    print(f"Dealer wins with {dealer_cards} vs players {player_cards} and {total_points_dealer} to {total_points_player} points")
 
 if total_points_player == 21:
     print(f"Player wins with Blackjack!")
 elif total_points_dealer == 21:
     print(f"Dealer wins with Blackjack!")
-
